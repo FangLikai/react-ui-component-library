@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>React Tech UI - 科技风格组件库</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--tech-primary:#00d4ff;--tech-primary-dark:#0098d4;--tech-primary-light:#33ddff;--tech-secondary:#0affb0;--tech-secondary-dark:#08c98a;--tech-accent:#ff6b35;--tech-warning:#ffd000;--tech-danger:#ff4757;--tech-success:#0affb0;--tech-bg-dark:#0a0e27;--tech-bg-medium:#0d1135;--tech-bg-light:#131842;--tech-bg-card:rgba(13,17,53,0.85);--tech-bg-card-hover:rgba(19,24,66,0.9);--tech-border:rgba(0,212,255,0.3);--tech-border-active:rgba(0,212,255,0.7);--tech-text-primary:#e8eaf6;--tech-text-secondary:rgba(232,234,246,0.65);--tech-text-muted:rgba(232,234,246,0.35);--tech-glow-primary:rgba(0,212,255,0.15);--tech-glow-secondary:rgba(10,255,176,0.15);--tech-font-digital:'Orbitron','Rajdhani','Courier New',monospace;--tech-font-title:'Rajdhani','Microsoft YaHei',sans-serif;--tech-font-body:'Microsoft YaHei','PingFang SC',sans-serif}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:var(--tech-font-body);background:var(--tech-bg-dark);color:var(--tech-text-primary);min-height:100vh}
+.doc-layout{min-height:100vh;display:flex;flex-direction:column}
+.doc-header{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 24px;background:rgba(13,17,53,0.95);border-bottom:1px solid var(--tech-border);position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+.doc-header__left{display:flex;align-items:center;gap:12px}
+.doc-header__toggle{background:none;border:1px solid var(--tech-border);color:var(--tech-primary);width:28px;height:28px;border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all 0.2s}
+.doc-header__toggle:hover{background:var(--tech-glow-primary)}
+.doc-header__title{font-family:var(--tech-font-title);font-size:18px;font-weight:600;color:var(--tech-primary);cursor:pointer;display:flex;align-items:center;gap:8px;margin:0}
+.doc-header__logo{font-size:22px}
+.doc-header__right{display:flex;align-items:center;gap:16px}
+.doc-header__version{font-family:var(--tech-font-digital);font-size:12px;color:var(--tech-text-muted);padding:2px 8px;border:1px solid var(--tech-border);border-radius:10px}
+.doc-header__github{font-size:13px;color:var(--tech-text-secondary);text-decoration:none;transition:color 0.2s}.doc-header__github:hover{color:var(--tech-primary)}
+.doc-body{display:flex;flex:1;overflow:hidden}
+.doc-sidebar{width:260px;min-width:260px;height:calc(100vh - 56px);overflow-y:auto;background:rgba(13,17,53,0.6);border-right:1px solid var(--tech-border);padding:16px 0;transition:all 0.3s ease}
+.doc-sidebar--collapsed{width:0;min-width:0;padding:0;overflow:hidden;border-right:none}
+.doc-nav-group{margin-bottom:8px}
+.doc-nav-group__title{padding:8px 24px;font-size:12px;font-weight:600;color:var(--tech-text-muted);text-transform:uppercase;letter-spacing:2px}
+.doc-nav-item{padding:8px 24px 8px 32px;font-size:14px;color:var(--tech-text-secondary);cursor:pointer;transition:all 0.2s;border-left:2px solid transparent}
+.doc-nav-item:hover{color:var(--tech-primary);background:var(--tech-glow-primary)}
+.doc-nav-item--active{color:var(--tech-primary);background:var(--tech-glow-primary);border-left-color:var(--tech-primary);font-weight:500}
+.doc-content{flex:1;height:calc(100vh - 56px);overflow-y:auto;padding:32px 48px;max-width:960px}
+.doc-content h1{font-family:var(--tech-font-title);font-size:28px;color:var(--tech-text-primary);margin-bottom:8px;font-weight:600}
+.doc-content h2{font-family:var(--tech-font-title);font-size:20px;color:var(--tech-primary);margin:32px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--tech-border);font-weight:600}
+.doc-content h3{font-family:var(--tech-font-title);font-size:16px;color:var(--tech-text-primary);margin:24px 0 12px;font-weight:600}
+.doc-content p{color:var(--tech-text-secondary);font-size:14px;line-height:1.8;margin-bottom:12px}
+.doc-content code{background:rgba(0,212,255,0.08);color:var(--tech-primary);padding:2px 6px;border-radius:3px;font-size:13px;font-family:'Fira Code','Consolas',monospace}
+.doc-content table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
+.doc-content th{background:rgba(0,212,255,0.06);color:var(--tech-primary);font-weight:500;text-align:left;padding:10px 16px;border-bottom:1px solid var(--tech-border);white-space:nowrap}
+.doc-content td{padding:10px 16px;border-bottom:1px solid rgba(0,212,255,0.06);color:var(--tech-text-secondary)}
+.doc-content td code{font-size:12px}
+.doc-content ul{color:var(--tech-text-secondary);padding-left:20px;line-height:2}
+.code-box{border:1px solid var(--tech-border);border-radius:6px;overflow:hidden;margin:16px 0;background:var(--tech-bg-card)}
+.code-box__title{padding:10px 16px;font-size:13px;color:var(--tech-text-secondary);border-bottom:1px solid var(--tech-border);background:rgba(0,212,255,0.03)}
+.code-box__pre{padding:16px;margin:0;overflow-x:auto;font-size:13px;line-height:1.6;font-family:'Fira Code','Consolas','Courier New',monospace}
+.code-box__pre code{background:none;padding:0;color:var(--tech-text-primary);white-space:pre}
+.page-section{display:none}.page-section--active{display:block}
+.doc-home__hero{text-align:center;padding:48px 0 32px;position:relative}
+.doc-home__hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(0,212,255,0.08) 0%,transparent 70%);pointer-events:none}
+.doc-home__title{font-family:var(--tech-font-title);font-size:42px;font-weight:700;background:linear-gradient(135deg,var(--tech-primary),var(--tech-primary-light));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:12px;position:relative}
+.doc-home__logo{font-size:48px;-webkit-text-fill-color:initial}
+.doc-home__subtitle{font-size:20px;color:var(--tech-text-secondary);margin-bottom:12px;letter-spacing:2px}
+.doc-home__desc{font-size:14px;color:var(--tech-text-muted);max-width:500px;margin:0 auto 24px;line-height:1.8}
+.doc-home__actions{display:flex;gap:16px;justify-content:center}
+.doc-home__features{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:32px 0}
+.doc-home__feature{padding:24px;border:1px solid var(--tech-border);border-radius:6px;background:var(--tech-bg-card);transition:all 0.3s}
+.doc-home__feature:hover{border-color:var(--tech-border-active);box-shadow:0 0 20px var(--tech-glow-primary)}
+.doc-home__feature-icon{font-size:28px;margin-bottom:12px}
+.doc-home__feature-title{font-family:var(--tech-font-title);font-size:16px;color:var(--tech-primary);margin-bottom:8px;font-weight:600}
+.doc-home__feature-desc{font-size:13px;color:var(--tech-text-secondary);line-height:1.6}
+.deco-line{height:1px;background:linear-gradient(90deg,transparent,var(--tech-primary),transparent);margin:24px 0}
+.tech-btn{position:relative;padding:12px 28px;font-family:var(--tech-font-title);font-size:16px;font-weight:600;letter-spacing:2px;border:1px solid var(--tech-primary);background:transparent;color:var(--tech-primary);cursor:pointer;overflow:hidden;transition:all 0.3s ease;border-radius:2px}
+.tech-btn:hover{background:rgba(0,212,255,0.1);box-shadow:0 0 20px var(--tech-glow-primary);transform:translateY(-2px)}
+.tech-btn--primary{background:linear-gradient(135deg,rgba(0,212,255,0.2),rgba(10,255,176,0.1))}
+.tech-btn--outline{background:transparent}
+.tech-btn--large{padding:14px 36px;font-size:18px}
+@keyframes techGlow{0%,100%{opacity:1}50%{opacity:0.7}}
+.tech-btn--glow{animation:techGlow 2s ease-in-out infinite}
+::-webkit-scrollbar{width:8px;height:8px}::-webkit-scrollbar-track{background:var(--tech-bg-medium)}::-webkit-scrollbar-thumb{background:var(--tech-border);border-radius:4px}::-webkit-scrollbar-thumb:hover{background:var(--tech-primary)}
+</style>
+</head>
+<body>
+<div class="doc-layout">
+<header class="doc-header">
+<div class="doc-header__left">
+<button class="doc-header__toggle" id="toggleBtn" onclick="toggleSidebar()">&#9664;</button>
+<h1 class="doc-header__title" onclick="navigate('home')"><span class="doc-header__logo">&#9889;</span> React Tech UI</h1>
+</div>
+<div class="doc-header__right">
+<span class="doc-header__version">v1.0.6</span>
+<a class="doc-header__github" href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a>
+</div>
+</header>
+<div class="doc-body">
+<aside class="doc-sidebar" id="sidebar">
+<div class="doc-nav-group"><div class="doc-nav-group__title">开发指南</div>
+<div class="doc-nav-item doc-nav-item--active" data-page="home" onclick="navigate('home')">首页</div>
+<div class="doc-nav-item" data-page="quick-start" onclick="navigate('quick-start')">快速上手</div>
+<div class="doc-nav-item" data-page="theme" onclick="navigate('theme')">主题定制</div>
+</div>
+<div class="doc-nav-group"><div class="doc-nav-group__title">组件</div>
+<div class="doc-nav-item" data-page="screen-adapter" onclick="navigate('screen-adapter')">ScreenAdapter 大屏适配</div>
+<div class="doc-nav-item" data-page="tech-border" onclick="navigate('tech-border')">TechBorder 科技边框</div>
+<div class="doc-nav-item" data-page="data-card" onclick="navigate('data-card')">DataCard 数据卡片</div>
+<div class="doc-nav-item" data-page="digital-number" onclick="navigate('digital-number')">DigitalNumber 数字翻牌器</div>
+<div class="doc-nav-item" data-page="tech-title" onclick="navigate('tech-title')">TechTitle 科技标题</div>
+<div class="doc-nav-item" data-page="scroll-table" onclick="navigate('scroll-table')">ScrollTable 滚动表格</div>
+<div class="doc-nav-item" data-page="status-indicator" onclick="navigate('status-indicator')">StatusIndicator 状态指示器</div>
+<div class="doc-nav-item" data-page="decoration-line" onclick="navigate('decoration-line')">DecorationLine 装饰线条</div>
+<div class="doc-nav-item" data-page="tech-button" onclick="navigate('tech-button')">TechButton 科技按钮</div>
+<div class="doc-nav-item" data-page="modal" onclick="navigate('modal')">Modal 科技弹窗</div>
+<div class="doc-nav-item" data-page="flow-light" onclick="navigate('flow-light')">FlowLight 流光背景</div>
+<div class="doc-nav-item" data-page="toast" onclick="navigate('toast')">Toast 科技提示</div>
+<div class="doc-nav-item" data-page="theme-provider" onclick="navigate('theme-provider')">ThemeProvider 主题切换</div>
+<div class="doc-nav-item" data-page="popconfirm" onclick="navigate('popconfirm')">Popconfirm 气泡确认框</div>
+<div class="doc-nav-item" data-page="skeleton" onclick="navigate('skeleton')">Skeleton 骨架屏</div>
+<div class="doc-nav-item" data-page="drawer" onclick="navigate('drawer')">Drawer 抽屉</div>
+<div class="doc-nav-item" data-page="qrcode" onclick="navigate('qrcode')">QRCode 二维码</div>
+<div class="doc-nav-item" data-page="icon" onclick="navigate('icon')">Icon 图标</div>
+<div class="doc-nav-item" data-page="masonry" onclick="navigate('masonry')">Masonry 瀑布流</div>
+<div class="doc-nav-item" data-page="floating-button" onclick="navigate('floating-button')">FloatingButton 悬浮按钮</div>
+</div>
+
+</aside>
+<main class="doc-content" id="content">
+<div class="page-section page-section--active" id="page-home">
+<div class="doc-home__hero">
+<div class="doc-home__hero-bg"></div>
+<h1 class="doc-home__title"><span class="doc-home__logo">⚡</span> React Tech UI</h1>
+<p class="doc-home__subtitle">科技风格 React UI 组件库 · 专注大屏场景</p>
+<p class="doc-home__desc">深色主题 + 霓虹光效 + 扫描线动画，20 大核心组件，助力开发者快速构建现代化大屏 Web 应用</p>
+<div class="doc-home__actions">
+<button class="tech-btn tech-btn--primary tech-btn--large tech-btn--glow" onclick="navigate('quick-start')">快速上手 →</button>
+<button class="tech-btn tech-btn--outline tech-btn--large" onclick="navigate('screen-adapter')">组件列表</button>
+</div>
+<div class="deco-line" style="margin-top:32px"></div>
+</div>
+<div class="doc-home__features">
+<div class="doc-home__feature"><div class="doc-home__feature-icon">🎨</div><h3 class="doc-home__feature-title">科技风格</h3><p class="doc-home__feature-desc">深色主题 + 霓虹光效 + 扫描线动画，打造沉浸式科技感界面</p></div>
+<div class="doc-home__feature"><div class="doc-home__feature-icon">📺</div><h3 class="doc-home__feature-title">大屏适配</h3><p class="doc-home__feature-desc">内置 ScreenAdapter，支持等比缩放、宽度缩放、全屏三种模式</p></div>
+<div class="doc-home__feature"><div class="doc-home__feature-icon">✨</div><h3 class="doc-home__feature-title">丰富动画</h3><p class="doc-home__feature-desc">脉冲发光、扫描线、渐变流动、数字翻牌等多种科技风动画</p></div>
+<div class="doc-home__feature"><div class="doc-home__feature-icon">📦</div><h3 class="doc-home__feature-title">开箱即用</h3><p class="doc-home__feature-desc">20 大核心组件，覆盖大屏开发常见场景，零配置即可使用</p></div>
+<div class="doc-home__feature"><div class="doc-home__feature-icon">🔧</div><h3 class="doc-home__feature-title">TypeScript</h3><p class="doc-home__feature-desc">完整类型定义，开发体验友好，编辑器智能提示</p></div>
+<div class="doc-home__feature"><div class="doc-home__feature-icon">🎯</div><h3 class="doc-home__feature-title">主题定制</h3><p class="doc-home__feature-desc">CSS 变量驱动主题，轻松自定义颜色、字体和风格</p></div>
+</div>
+<h2 style="font-family:var(--tech-font-title);font-size:20px;color:var(--tech-primary);margin-bottom:16px;text-align:center">安装使用</h2>
+<div class="code-box"><pre class="code-box__pre"><code># 安装组件库
+npm install react-tech-ui
+
+# 在项目中引入
+import { ScreenAdapter, DataCard, DigitalNumber } from 'react-tech-ui';
+import 'react-tech-ui/dist/style.css';</code></pre></div>
+</div>
+
+<div class="page-section" id="page-quick-start">
+<h1>快速上手</h1>
+<p>以下将帮助你从零开始搭建一个基于 React Tech UI 的大屏应用。</p>
+<h2>安装</h2>
+<div class="code-box"><pre class="code-box__pre"><code>npm install react-tech-ui</code></pre></div>
+<h2>引入样式</h2>
+<p>在项目入口文件（如 <code>main.tsx</code> 或 <code>App.tsx</code>）中引入组件库样式：</p>
+<div class="code-box"><pre class="code-box__pre"><code>import 'react-tech-ui/dist/style.css';</code></pre></div>
+<h2>使用组件</h2>
+<p>按需引入组件即可使用：</p>
+<div class="code-box"><pre class="code-box__pre"><code>import { ScreenAdapter, TechBorder, DataCard, DigitalNumber } from 'react-tech-ui';
+
+function Dashboard() {
+  return (
+    &lt;ScreenAdapter width={1920} height={1080} bgStyle=&quot;grid&quot;&gt;
+      &lt;div style={{ padding: 20 }}&gt;
+        &lt;TechBorder variant=&quot;corner&quot;&gt;
+          &lt;DataCard title=&quot;在线用户&quot; trend=&quot;up&quot; trendValue=&quot;+12%&quot;&gt;
+            &lt;DigitalNumber value={12847} fontSize={28} /&gt;
+          &lt;/DataCard&gt;
+        &lt;/TechBorder&gt;
+      &lt;/div&gt;
+    &lt;/ScreenAdapter&gt;
+  );
+}
+
+export default Dashboard;</code></pre></div>
+<h2>大屏适配</h2>
+<p>使用 <code>ScreenAdapter</code> 组件作为最外层容器，它会根据设计稿尺寸自动缩放内容：</p>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;ScreenAdapter width={1920} height={1080} mode=&quot;scale&quot; bgStyle=&quot;grid&quot;&gt;
+  {/* 你的大屏内容 */}
+&lt;/ScreenAdapter&gt;</code></pre></div>
+<h2>本地开发</h2>
+<p>如果你想参与组件库开发或查看 Demo：</p>
+<div class="code-box"><pre class="code-box__pre"><code># 克隆项目
+git clone &lt;repository-url&gt;
+
+# 安装依赖
+npm install
+
+# 启动开发服务器
+npm run dev
+
+# 构建组件库
+npm run build:lib</code></pre></div>
+<h2>浏览器兼容性</h2>
+<p>React Tech UI 支持所有现代浏览器，需要浏览器支持以下特性：</p>
+<ul><li>CSS Variables</li><li>CSS backdrop-filter</li><li>ES2020</li><li>React 18+</li></ul>
+</div>
+
+<div class="page-section" id="page-theme">
+<h1>主题定制</h1>
+<p>React Tech UI 使用 CSS 变量驱动主题，你可以通过覆盖变量来自定义组件库的视觉风格。</p>
+<h2>CSS 变量</h2>
+<p>在项目中覆盖以下 CSS 变量即可修改主题：</p>
+<div class="code-box"><pre class="code-box__pre"><code>:root {
+  --tech-primary: #00d4ff;
+  --tech-primary-dark: #0098d4;
+  --tech-primary-light: #33ddff;
+  --tech-secondary: #0affb0;
+  --tech-secondary-dark: #08c98a;
+  --tech-accent: #ff6b35;
+  --tech-warning: #ffd000;
+  --tech-danger: #ff4757;
+  --tech-success: #0affb0;
+  --tech-bg-dark: #0a0e27;
+  --tech-bg-medium: #0d1135;
+  --tech-bg-light: #131842;
+  --tech-bg-card: rgba(13, 17, 53, 0.85);
+  --tech-border: rgba(0, 212, 255, 0.3);
+  --tech-border-active: rgba(0, 212, 255, 0.7);
+  --tech-text-primary: #e8eaf6;
+  --tech-text-secondary: rgba(232, 234, 246, 0.65);
+  --tech-text-muted: rgba(232, 234, 246, 0.35);
+  --tech-glow-primary: rgba(0, 212, 255, 0.15);
+  --tech-glow-secondary: rgba(10, 255, 176, 0.15);
+  --tech-font-digital: 'Orbitron', 'Rajdhani', monospace;
+  --tech-font-title: 'Rajdhani', 'Microsoft YaHei', sans-serif;
+  --tech-font-body: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+}</code></pre></div>
+<h2>自定义示例</h2>
+<h3>绿色科技风</h3>
+<div class="code-box"><pre class="code-box__pre"><code>:root {
+  --tech-primary: #0affb0;
+  --tech-primary-dark: #08c98a;
+  --tech-primary-light: #33ffbf;
+  --tech-border: rgba(10, 255, 176, 0.3);
+  --tech-border-active: rgba(10, 255, 176, 0.7);
+  --tech-glow-primary: rgba(10, 255, 176, 0.15);
+}</code></pre></div>
+<h3>紫色科技风</h3>
+<div class="code-box"><pre class="code-box__pre"><code>:root {
+  --tech-primary: #a855f7;
+  --tech-primary-dark: #9333ea;
+  --tech-primary-light: #c084fc;
+  --tech-bg-dark: #0f0520;
+  --tech-bg-medium: #150730;
+  --tech-bg-card: rgba(21, 7, 48, 0.85);
+  --tech-border: rgba(168, 85, 247, 0.3);
+  --tech-border-active: rgba(168, 85, 247, 0.7);
+  --tech-glow-primary: rgba(168, 85, 247, 0.15);
+}</code></pre></div>
+<h2>JavaScript 主题对象</h2>
+<p>组件库也导出了 JavaScript 主题对象，方便在 JS 中获取主题值：</p>
+<div class="code-box"><pre class="code-box__pre"><code>import { techTheme } from 'react-tech-ui';
+
+console.log(techTheme.colors.primary);     // '#00d4ff'
+console.log(techTheme.colors.bgDark);      // '#0a0e27'
+console.log(techTheme.fonts.digital);      // '&quot;Orbitron&quot;, &quot;Rajdhani&quot;, ...'
+console.log(techTheme.animation.durationNormal);  // '0.3s'</code></pre></div>
+<h2>完整主题变量列表</h2>
+<table><thead><tr><th>变量名</th><th>说明</th><th>默认值</th></tr></thead><tbody>
+<tr><td><code>--tech-primary</code></td><td>主色调</td><td>#00d4ff</td></tr>
+<tr><td><code>--tech-primary-dark</code></td><td>主色深色</td><td>#0098d4</td></tr>
+<tr><td><code>--tech-primary-light</code></td><td>主色浅色</td><td>#33ddff</td></tr>
+<tr><td><code>--tech-secondary</code></td><td>辅助色</td><td>#0affb0</td></tr>
+<tr><td><code>--tech-accent</code></td><td>强调色</td><td>#ff6b35</td></tr>
+<tr><td><code>--tech-warning</code></td><td>警告色</td><td>#ffd000</td></tr>
+<tr><td><code>--tech-danger</code></td><td>危险色</td><td>#ff4757</td></tr>
+<tr><td><code>--tech-success</code></td><td>成功色</td><td>#0affb0</td></tr>
+<tr><td><code>--tech-bg-dark</code></td><td>深色背景</td><td>#0a0e27</td></tr>
+<tr><td><code>--tech-bg-medium</code></td><td>中等背景</td><td>#0d1135</td></tr>
+<tr><td><code>--tech-bg-light</code></td><td>浅色背景</td><td>#131842</td></tr>
+<tr><td><code>--tech-bg-card</code></td><td>卡片背景</td><td>rgba(13,17,53,0.85)</td></tr>
+<tr><td><code>--tech-border</code></td><td>边框色</td><td>rgba(0,212,255,0.3)</td></tr>
+<tr><td><code>--tech-text-primary</code></td><td>主文字色</td><td>#e8eaf6</td></tr>
+<tr><td><code>--tech-text-secondary</code></td><td>次要文字色</td><td>rgba(232,234,246,0.65)</td></tr>
+<tr><td><code>--tech-font-digital</code></td><td>数字字体</td><td>Orbitron, monospace</td></tr>
+<tr><td><code>--tech-font-title</code></td><td>标题字体</td><td>Rajdhani, sans-serif</td></tr>
+</tbody></table>
+</div>
+
+<div class="page-section" id="page-screen-adapter">
+<h1>ScreenAdapter 大屏适配器</h1>
+<p>将内容按设计稿尺寸等比缩放，适配不同分辨率的大屏显示。是构建大屏应用的顶层容器组件。</p>
+<h2>基础用法</h2>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;ScreenAdapter width={1920} height={1080}&gt;
+  &lt;div&gt;你的大屏内容&lt;/div&gt;
+&lt;/ScreenAdapter&gt;</code></pre></div>
+<h2>适配模式</h2>
+<div class="code-box"><div class="code-box__title">scale — 等比缩放（默认）</div><pre class="code-box__pre"><code>&lt;ScreenAdapter width={1920} height={1080} mode=&quot;scale&quot;&gt;{children}&lt;/ScreenAdapter&gt;</code></pre></div>
+<div class="code-box"><div class="code-box__title">width-scale — 按宽度缩放</div><pre class="code-box__pre"><code>&lt;ScreenAdapter width={1920} height={1080} mode=&quot;width-scale&quot;&gt;{children}&lt;/ScreenAdapter&gt;</code></pre></div>
+<div class="code-box"><div class="code-box__title">full — 全屏填充</div><pre class="code-box__pre"><code>&lt;ScreenAdapter width={1920} height={1080} mode=&quot;full&quot;&gt;{children}&lt;/ScreenAdapter&gt;</code></pre></div>
+<h2>背景样式</h2>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;ScreenAdapter bgStyle=&quot;dark&quot;&gt;      {/* 纯深色背景 */}
+&lt;ScreenAdapter bgStyle=&quot;grid&quot;&gt;      {/* 网格背景 */}
+&lt;ScreenAdapter bgStyle=&quot;particles&quot;&gt; {/* 粒子背景 */}</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>width</td><td>设计稿宽度</td><td><code>number</code></td><td>1920</td></tr><tr><td>height</td><td>设计稿高度</td><td><code>number</code></td><td>1080</td></tr><tr><td>mode</td><td>适配模式</td><td><code>'scale' | 'width-scale' | 'full'</code></td><td>'scale'</td></tr><tr><td>bgStyle</td><td>背景样式</td><td><code>'dark' | 'grid' | 'particles'</code></td><td>'dark'</td></tr><tr><td>className</td><td>自定义类名</td><td><code>string</code></td><td>-</td></tr><tr><td>style</td><td>自定义样式</td><td><code>CSSProperties</code></td><td>-</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-tech-border">
+<h1>TechBorder 科技边框</h1>
+<p>提供 5 种科技风格边框变体，支持发光动画效果，是大屏页面区域划分的核心组件。</p>
+<h2>代码演示</h2>
+<h3>corner — 角标边框</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;TechBorder variant=&quot;corner&quot; cornerSize={20}&gt;
+  &lt;div style={{ padding: 24 }}&gt;角标边框内容&lt;/div&gt;
+&lt;/TechBorder&gt;</code></pre></div>
+<h3>full — 全边框</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;TechBorder variant=&quot;full&quot;&gt;
+  &lt;div style={{ padding: 24 }}&gt;全边框内容&lt;/div&gt;
+&lt;/TechBorder&gt;</code></pre></div>
+<h3>gradient — 渐变边框</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;TechBorder variant=&quot;gradient&quot;&gt;
+  &lt;div style={{ padding: 24 }}&gt;渐变边框内容&lt;/div&gt;
+&lt;/TechBorder&gt;</code></pre></div>
+<h3>scan — 扫描线边框</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;TechBorder variant=&quot;scan&quot;&gt;
+  &lt;div style={{ padding: 24 }}&gt;扫描线边框内容&lt;/div&gt;
+&lt;/TechBorder&gt;</code></pre></div>
+<h3>neon — 霓虹边框</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;TechBorder variant=&quot;neon&quot; color=&quot;#0affb0&quot;&gt;
+  &lt;div style={{ padding: 24 }}&gt;霓虹边框内容&lt;/div&gt;
+&lt;/TechBorder&gt;</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>variant</td><td>边框变体</td><td><code>'corner' | 'full' | 'gradient' | 'scan' | 'neon'</code></td><td>'corner'</td></tr><tr><td>color</td><td>边框颜色</td><td><code>string</code></td><td>--tech-primary</td></tr><tr><td>glowColor</td><td>发光颜色</td><td><code>string</code></td><td>--tech-glow-primary</td></tr><tr><td>borderWidth</td><td>边框宽度</td><td><code>number</code></td><td>1</td></tr><tr><td>cornerSize</td><td>角标尺寸</td><td><code>number</code></td><td>16</td></tr><tr><td>animate</td><td>是否启用动画</td><td><code>boolean</code></td><td>true</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-data-card">
+<h1>DataCard 数据卡片</h1>
+<p>展示核心指标数据的卡片，支持趋势标识、多种视觉风格，是大屏数据展示的核心组件。</p>
+<h2>代码演示</h2>
+<h3>基础用法</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;DataCard title=&quot;在线用户&quot; value=&quot;12,847&quot; unit=&quot;人&quot; /&gt;</code></pre></div>
+<h3>带趋势标识</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;DataCard title=&quot;吞吐量&quot; value=&quot;3.56&quot; unit=&quot;GB/s&quot; trend=&quot;up&quot; trendValue=&quot;+3.2%&quot; /&gt;
+&lt;DataCard title=&quot;错误率&quot; value=&quot;0.12&quot; unit=&quot;%&quot; trend=&quot;down&quot; trendValue=&quot;-0.05%&quot; /&gt;
+&lt;DataCard title=&quot;延迟&quot; value=&quot;42&quot; unit=&quot;ms&quot; trend=&quot;flat&quot; trendValue=&quot;0%&quot; /&gt;</code></pre></div>
+<h3>搭配 DigitalNumber</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;DataCard title=&quot;请求总量&quot; variant=&quot;gradient&quot; trend=&quot;up&quot; trendValue=&quot;+8.5%&quot;&gt;
+  &lt;DigitalNumber value={98456} fontSize={28} /&gt;
+&lt;/DataCard&gt;</code></pre></div>
+<h3>四种卡片样式</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;DataCard title=&quot;默认样式&quot; variant=&quot;default&quot; value=&quot;1,234&quot; /&gt;
+&lt;DataCard title=&quot;渐变样式&quot; variant=&quot;gradient&quot; value=&quot;5,678&quot; /&gt;
+&lt;DataCard title=&quot;毛玻璃样式&quot; variant=&quot;glass&quot; value=&quot;9,012&quot; /&gt;
+&lt;DataCard title=&quot;描边样式&quot; variant=&quot;outline&quot; value=&quot;3,456&quot; color=&quot;#0affb0&quot; /&gt;</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>title</td><td>卡片标题</td><td><code>string</code></td><td>-</td></tr><tr><td>value</td><td>数据值</td><td><code>string | number</code></td><td>-</td></tr><tr><td>unit</td><td>单位</td><td><code>string</code></td><td>-</td></tr><tr><td>icon</td><td>图标</td><td><code>ReactNode</code></td><td>-</td></tr><tr><td>trend</td><td>趋势方向</td><td><code>'up' | 'down' | 'flat'</code></td><td>-</td></tr><tr><td>trendValue</td><td>趋势值</td><td><code>string</code></td><td>-</td></tr><tr><td>variant</td><td>卡片样式</td><td><code>'default' | 'gradient' | 'glass' | 'outline'</code></td><td>'default'</td></tr><tr><td>color</td><td>主题色</td><td><code>string</code></td><td>-</td></tr><tr><td>animate</td><td>入场动画</td><td><code>boolean</code></td><td>true</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-digital-number">
+<h1>DigitalNumber 数字翻牌器</h1>
+<p>数字动态滚动效果组件，大屏数据展示必备。支持缓动动画、千分位分隔、前后缀等功能。</p>
+<h2>代码演示</h2>
+<h3>基础用法</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;DigitalNumber value={12847} /&gt;</code></pre></div>
+<h3>自定义字号</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;DigitalNumber value={98456} fontSize={56} /&gt;</code></pre></div>
+<h3>小数与单位</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;DigitalNumber value={3.56} decimals={2} suffix=&quot;GB/s&quot; /&gt;
+&lt;DigitalNumber value={0.12} decimals={2} suffix=&quot;%&quot; color=&quot;#ff4757&quot; /&gt;
+&lt;DigitalNumber value={42} suffix=&quot;ms&quot; color=&quot;#0affb0&quot; /&gt;</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>value</td><td>目标数值</td><td><code>number</code></td><td>-</td></tr><tr><td>duration</td><td>动画时长(ms)</td><td><code>number</code></td><td>1500</td></tr><tr><td>decimals</td><td>小数位数</td><td><code>number</code></td><td>0</td></tr><tr><td>separator</td><td>千分位分隔</td><td><code>boolean</code></td><td>true</td></tr><tr><td>prefix</td><td>前缀</td><td><code>string</code></td><td>-</td></tr><tr><td>suffix</td><td>后缀</td><td><code>string</code></td><td>-</td></tr><tr><td>color</td><td>数字颜色</td><td><code>string</code></td><td>--tech-primary</td></tr><tr><td>fontSize</td><td>字体大小(px)</td><td><code>number</code></td><td>36</td></tr><tr><td>animate</td><td>是否启用动画</td><td><code>boolean</code></td><td>true</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-tech-title">
+<h1>TechTitle 科技标题</h1>
+<p>5 种科技风格标题变体，支持三级标题，用于大屏页面的区域标题和主标题。</p>
+<h2>代码演示</h2>
+<h3>default — 纯色标题</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;TechTitle variant=&quot;default&quot; level={1}&gt;默认标题&lt;/TechTitle&gt;
+&lt;TechTitle variant=&quot;default&quot; level={2}&gt;二级标题&lt;/TechTitle&gt;
+&lt;TechTitle variant=&quot;default&quot; level={3}&gt;三级标题&lt;/TechTitle&gt;</code></pre></div>
+<h3>gradient — 渐变标题</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;TechTitle variant=&quot;gradient&quot; level={1}&gt;渐变标题&lt;/TechTitle&gt;</code></pre></div>
+<h3>glow — 发光标题</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;TechTitle variant=&quot;glow&quot; level={1}&gt;发光标题&lt;/TechTitle&gt;</code></pre></div>
+<h3>underline — 下划线标题</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;TechTitle variant=&quot;underline&quot; level={2}&gt;下划线标题&lt;/TechTitle&gt;</code></pre></div>
+<h3>bracket — 括号标题</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;TechTitle variant=&quot;bracket&quot; level={1}&gt;智慧数据中心&lt;/TechTitle&gt;</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>variant</td><td>标题变体</td><td><code>'default' | 'gradient' | 'glow' | 'underline' | 'bracket'</code></td><td>'default'</td></tr><tr><td>level</td><td>标题级别</td><td><code>1 | 2 | 3</code></td><td>1</td></tr><tr><td>color</td><td>标题颜色</td><td><code>string</code></td><td>--tech-primary</td></tr><tr><td>align</td><td>对齐方式</td><td><code>'left' | 'center' | 'right'</code></td><td>'left'</td></tr><tr><td>animate</td><td>是否启用动画</td><td><code>boolean</code></td><td>true</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-scroll-table">
+<h1>ScrollTable 滚动表格</h1>
+<p>自动滚动数据表格，鼠标悬停暂停滚动。适合大屏数据列表展示场景。</p>
+<h2>代码演示</h2>
+<div class="code-box"><pre class="code-box__pre"><code>const columns = [
+  { key: 'id', title: '编号', width: '25%' },
+  { key: 'name', title: '名称', width: '35%' },
+  { key: 'status', title: '状态', width: '20%' },
+  { key: 'cpu', title: 'CPU', width: '20%' },
+];
+
+&lt;ScrollTable columns={columns} data={data} /&gt;</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>columns</td><td>列配置</td><td><code>ScrollTableColumn[]</code></td><td>-</td></tr><tr><td>data</td><td>数据源</td><td><code>Record<string, any>[]</code></td><td>-</td></tr><tr><td>rowHeight</td><td>行高(px)</td><td><code>number</code></td><td>40</td></tr><tr><td>visibleRows</td><td>可见行数</td><td><code>number</code></td><td>6</td></tr><tr><td>scrollSpeed</td><td>滚动速度</td><td><code>number</code></td><td>50</td></tr><tr><td>headerColor</td><td>表头颜色</td><td><code>string</code></td><td>--tech-primary</td></tr><tr><td>rowHover</td><td>行悬停效果</td><td><code>boolean</code></td><td>true</td></tr><tr><td>animate</td><td>是否自动滚动</td><td><code>boolean</code></td><td>true</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-status-indicator">
+<h1>StatusIndicator 状态指示器</h1>
+<p>带脉冲动画的状态指示灯，用于展示系统或服务运行状态。</p>
+<h2>代码演示</h2>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;StatusIndicator status=&quot;online&quot; label=&quot;正常&quot; /&gt;
+&lt;StatusIndicator status=&quot;offline&quot; label=&quot;离线&quot; /&gt;
+&lt;StatusIndicator status=&quot;warning&quot; label=&quot;告警&quot; /&gt;
+&lt;StatusIndicator status=&quot;error&quot; label=&quot;异常&quot; /&gt;</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>status</td><td>状态类型</td><td><code>'online' | 'offline' | 'warning' | 'error' | 'custom'</code></td><td>'online'</td></tr><tr><td>color</td><td>自定义颜色</td><td><code>string</code></td><td>-</td></tr><tr><td>label</td><td>状态文本</td><td><code>string</code></td><td>-</td></tr><tr><td>size</td><td>尺寸</td><td><code>'small' | 'medium' | 'large'</code></td><td>'medium'</td></tr><tr><td>animate</td><td>脉冲动画</td><td><code>boolean</code></td><td>true</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-decoration-line">
+<h1>DecorationLine 装饰线条</h1>
+<p>5 种装饰线条样式，用于区域分隔和视觉装饰，增强大屏页面的科技感。</p>
+<h2>代码演示</h2>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;DecorationLine variant=&quot;solid&quot; /&gt;      {/* 实线 */}
+&lt;DecorationLine variant=&quot;dashed&quot; /&gt;     {/* 虚线 */}
+&lt;DecorationLine variant=&quot;gradient&quot; /&gt;   {/* 渐变线 */}
+&lt;DecorationLine variant=&quot;double&quot; thickness={3} /&gt;  {/* 双线 */}
+&lt;DecorationLine variant=&quot;dot-wave&quot; /&gt;   {/* 点阵波 */}</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>variant</td><td>线条变体</td><td><code>'solid' | 'dashed' | 'gradient' | 'double' | 'dot-wave'</code></td><td>'gradient'</td></tr><tr><td>direction</td><td>方向</td><td><code>'horizontal' | 'vertical'</code></td><td>'horizontal'</td></tr><tr><td>color</td><td>线条颜色</td><td><code>string</code></td><td>--tech-primary</td></tr><tr><td>length</td><td>线条长度</td><td><code>string | number</code></td><td>'100%'</td></tr><tr><td>thickness</td><td>线条粗细(px)</td><td><code>number</code></td><td>1</td></tr><tr><td>animate</td><td>是否启用动画</td><td><code>boolean</code></td><td>true</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-tech-button">
+<h1>TechButton 科技按钮</h1>
+<p>5 种科技风格按钮，支持发光、加载、扫光等效果。</p>
+<h2>代码演示</h2>
+<h3>按钮变体</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;TechButton variant=&quot;primary&quot;&gt;主要按钮&lt;/TechButton&gt;
+&lt;TechButton variant=&quot;secondary&quot;&gt;次要按钮&lt;/TechButton&gt;
+&lt;TechButton variant=&quot;outline&quot;&gt;描边按钮&lt;/TechButton&gt;
+&lt;TechButton variant=&quot;ghost&quot;&gt;幽灵按钮&lt;/TechButton&gt;
+&lt;TechButton variant=&quot;neon&quot;&gt;霓虹按钮&lt;/TechButton&gt;</code></pre></div>
+<h3>按钮尺寸</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;TechButton variant=&quot;primary&quot; size=&quot;small&quot;&gt;小按钮&lt;/TechButton&gt;
+&lt;TechButton variant=&quot;primary&quot; size=&quot;medium&quot;&gt;中按钮&lt;/TechButton&gt;
+&lt;TechButton variant=&quot;primary&quot; size=&quot;large&quot;&gt;大按钮&lt;/TechButton&gt;</code></pre></div>
+<h3>发光效果</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;TechButton variant=&quot;primary&quot; glow&gt;发光按钮&lt;/TechButton&gt;
+&lt;TechButton variant=&quot;neon&quot; glow&gt;霓虹发光&lt;/TechButton&gt;</code></pre></div>
+<h3>加载状态</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;TechButton variant=&quot;primary&quot; loading&gt;加载中...&lt;/TechButton&gt;
+&lt;TechButton variant=&quot;outline&quot; loading&gt;部署中&lt;/TechButton&gt;</code></pre></div>
+<h3>禁用状态</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;TechButton variant=&quot;primary&quot; disabled&gt;禁用&lt;/TechButton&gt;
+&lt;TechButton variant=&quot;outline&quot; disabled&gt;禁用&lt;/TechButton&gt;
+&lt;TechButton variant=&quot;neon&quot; disabled&gt;禁用&lt;/TechButton&gt;</code></pre></div>
+<h3>自定义颜色</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;TechButton variant=&quot;primary&quot; color=&quot;#a855f7&quot;&gt;紫色按钮&lt;/TechButton&gt;
+&lt;TechButton variant=&quot;outline&quot; color=&quot;#0affb0&quot;&gt;绿色按钮&lt;/TechButton&gt;
+&lt;TechButton variant=&quot;neon&quot; color=&quot;#ff6b35&quot;&gt;橙色按钮&lt;/TechButton&gt;</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>variant</td><td>按钮变体</td><td><code>'primary' | 'secondary' | 'outline' | 'ghost' | 'neon'</code></td><td>'primary'</td></tr><tr><td>size</td><td>按钮尺寸</td><td><code>'small' | 'medium' | 'large'</code></td><td>'medium'</td></tr><tr><td>color</td><td>主题色</td><td><code>string</code></td><td>-</td></tr><tr><td>glow</td><td>发光脉冲效果</td><td><code>boolean</code></td><td>false</td></tr><tr><td>loading</td><td>加载状态</td><td><code>boolean</code></td><td>false</td></tr><tr><td>icon</td><td>图标</td><td><code>ReactNode</code></td><td>-</td></tr><tr><td>disabled</td><td>禁用状态</td><td><code>boolean</code></td><td>false</td></tr><tr><td>onClick</td><td>点击事件</td><td><code>() => void</code></td><td>-</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-modal">
+<h1>Modal 科技弹窗</h1>
+<p>科技风格弹窗组件，支持三种视觉变体，自带四角装饰和发光效果，适合大屏场景的确认、详情展示等交互。</p>
+<h2>代码演示</h2>
+<h3>基础用法</h3>
+<div class="code-box"><pre class="code-box__pre"><code>const [open, setOpen] = useState(false);
+
+&lt;TechButton variant=&quot;primary&quot; onClick={() =&gt; setOpen(true)}&gt;打开弹窗&lt;/TechButton&gt;
+
+&lt;Modal
+  open={open}
+  onClose={() =&gt; setOpen(false)}
+  title=&quot;系统提示&quot;
+  footer={
+    &lt;&gt;
+      &lt;TechButton variant=&quot;ghost&quot; onClick={() =&gt; setOpen(false)}&gt;取消&lt;/TechButton&gt;
+      &lt;TechButton variant=&quot;primary&quot; onClick={() =&gt; setOpen(false)}&gt;确定&lt;/TechButton&gt;
+    &lt;/&gt;
+  }
+&gt;
+  &lt;p&gt;这是一段科技风格的弹窗内容，用于信息确认或详情展示。&lt;/p&gt;
+&lt;/Modal&gt;</code></pre></div>
+<h3>neon — 霓虹弹窗</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;Modal
+  variant=&quot;neon&quot;
+  open={open}
+  onClose={() =&gt; setOpen(false)}
+  title=&quot;霓虹弹窗&quot;
+&gt;
+  &lt;p&gt;霓虹发光边框效果，更加醒目。&lt;/p&gt;
+&lt;/Modal&gt;</code></pre></div>
+<h3>scan — 扫描线弹窗</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;Modal
+  variant=&quot;scan&quot;
+  open={open}
+  onClose={() =&gt; setOpen(false)}
+  title=&quot;扫描线弹窗&quot;
+&gt;
+  &lt;p&gt;顶部光线循环扫描效果。&lt;/p&gt;
+&lt;/Modal&gt;</code></pre></div>
+<h3>自定义宽度</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;Modal
+  open={open}
+  onClose={() =&gt; setOpen(false)}
+  title=&quot;宽弹窗&quot;
+  width={720}
+&gt;
+  &lt;p&gt;通过 width 属性自定义弹窗宽度。&lt;/p&gt;
+&lt;/Modal&gt;</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>open</td><td>是否显示</td><td><code>boolean</code></td><td>false</td></tr><tr><td>onClose</td><td>关闭回调</td><td><code>() => void</code></td><td>-</td></tr><tr><td>title</td><td>标题</td><td><code>ReactNode</code></td><td>-</td></tr><tr><td>footer</td><td>底部内容，设为 null 可隐藏</td><td><code>ReactNode</code></td><td>-</td></tr><tr><td>width</td><td>弹窗宽度(px)</td><td><code>number</code></td><td>520</td></tr><tr><td>variant</td><td>弹窗变体</td><td><code>'default' | 'neon' | 'scan'</code></td><td>'default'</td></tr><tr><td>maskClosable</td><td>点击遮罩关闭</td><td><code>boolean</code></td><td>true</td></tr><tr><td>closable</td><td>显示关闭按钮</td><td><code>boolean</code></td><td>true</td></tr><tr><td>animate</td><td>入场动画</td><td><code>boolean</code></td><td>true</td></tr><tr><td>className</td><td>自定义类名</td><td><code>string</code></td><td>-</td></tr><tr><td>style</td><td>自定义样式</td><td><code>CSSProperties</code></td><td>-</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-flow-light">
+<h1>FlowLight 流光背景</h1>
+<p>科技风格流光背景组件，提供极光、网格、粒子、波浪四种视觉效果，适合大屏页面的背景装饰，支持自定义颜色、速度和强度。</p>
+<h2>代码演示</h2>
+<h3>aurora — 极光效果</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;FlowLight variant=&quot;aurora&quot; style={{ height: 300 }}&gt;
+  &lt;div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}&gt;
+    &lt;TechTitle variant=&quot;glow&quot; level={2}&gt;极光背景&lt;/TechTitle&gt;
+  &lt;/div&gt;
+&lt;/FlowLight&gt;</code></pre></div>
+<h3>grid — 网格效果</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;FlowLight variant=&quot;grid&quot; speed={0.5} style={{ height: 300 }}&gt;
+  &lt;div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}&gt;
+    &lt;TechTitle variant=&quot;glow&quot; level={2}&gt;网格背景&lt;/TechTitle&gt;
+  &lt;/div&gt;
+&lt;/FlowLight&gt;</code></pre></div>
+<h3>particle — 粒子效果</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;FlowLight variant=&quot;particle&quot; speed={2} style={{ height: 300 }}&gt;
+  &lt;div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}&gt;
+    &lt;TechTitle variant=&quot;glow&quot; level={2}&gt;粒子背景&lt;/TechTitle&gt;
+  &lt;/div&gt;
+&lt;/FlowLight&gt;</code></pre></div>
+<h3>wave — 波浪效果</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;FlowLight variant=&quot;wave&quot; style={{ height: 300 }}&gt;
+  &lt;div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}&gt;
+    &lt;TechTitle variant=&quot;glow&quot; level={2}&gt;波浪背景&lt;/TechTitle&gt;
+  &lt;/div&gt;
+&lt;/FlowLight&gt;</code></pre></div>
+<h3>自定义颜色</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;FlowLight variant=&quot;aurora&quot; color=&quot;#0affb0&quot; style={{ height: 300 }}&gt;
+  &lt;div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}&gt;
+    &lt;TechTitle variant=&quot;glow&quot; level={2}&gt;绿色极光&lt;/TechTitle&gt;
+  &lt;/div&gt;
+&lt;/FlowLight&gt;</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>variant</td><td>流光变体</td><td><code>'aurora' | 'grid' | 'particle' | 'wave'</code></td><td>'aurora'</td></tr><tr><td>color</td><td>自定义主色</td><td><code>string</code></td><td>主题色</td></tr><tr><td>speed</td><td>动画速度倍率</td><td><code>number</code></td><td>1</td></tr><tr><td>opacity</td><td>透明度 (0-1)</td><td><code>number</code></td><td>0.6</td></tr><tr><td>intensity</td><td>流光强度</td><td><code>'low' | 'medium' | 'high'</code></td><td>'medium'</td></tr><tr><td>children</td><td>内容区域</td><td><code>ReactNode</code></td><td>-</td></tr><tr><td>className</td><td>自定义类名</td><td><code>string</code></td><td>-</td></tr><tr><td>style</td><td>自定义样式</td><td><code>CSSProperties</code></td><td>-</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-toast">
+<h1>Toast 科技提示</h1>
+<p>科技风格全局提示组件，支持命令式调用，提供四种提示类型。</p>
+<h2>代码演示</h2>
+<h3>基础用法</h3>
+<div class="code-box"><pre class="code-box__pre"><code>import { Toast } from 'react-tech-ui';
+
+Toast.info('这是一条信息提示');
+Toast.success('操作成功');
+Toast.warning('请注意风险');
+Toast.error('操作失败');</code></pre></div>
+<h3>自定义时长</h3>
+<div class="code-box"><pre class="code-box__pre"><code>Toast.info('3秒后关闭', 3000);</code></pre></div>
+<h3>自定义位置</h3>
+<div class="code-box"><pre class="code-box__pre"><code>Toast.info('顶部提示', { position: 'top' });
+Toast.info('底部提示', { position: 'bottom' });</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>方法</th><th>说明</th><th>参数</th></tr></thead><tbody><tr><td><code>Toast.info(message, duration?, options?)</code></td><td>信息提示</td><td>message: string</td></tr><tr><td><code>Toast.success(message, duration?, options?)</code></td><td>成功提示</td><td>message: string</td></tr><tr><td><code>Toast.warning(message, duration?, options?)</code></td><td>警告提示</td><td>message: string</td></tr><tr><td><code>Toast.error(message, duration?, options?)</code></td><td>错误提示</td><td>message: string</td></tr><tr><td><code>Toast.destroy()</code></td><td>销毁所有提示</td><td>-</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-theme-provider">
+<h1>ThemeProvider 主题切换</h1>
+<p>主题切换容器组件，支持动态切换预设主题和自定义主题，所有子组件自动响应主题变化。</p>
+<h2>代码演示</h2>
+<h3>基础用法</h3>
+<div class="code-box"><pre class="code-box__pre"><code>import { ThemeProvider } from 'react-tech-ui';
+
+&lt;ThemeProvider theme=&quot;dark&quot;&gt;
+  &lt;App /&gt;
+&lt;/ThemeProvider&gt;</code></pre></div>
+<h3>预设主题</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;ThemeProvider theme=&quot;dark&quot;&gt;   {/* 深色科技风 */}
+&lt;ThemeProvider theme=&quot;blue&quot;&gt;   {/* 蓝色科技风 */}
+&lt;ThemeProvider theme=&quot;green&quot;&gt;  {/* 绿色科技风 */}
+&lt;ThemeProvider theme=&quot;purple&quot;&gt; {/* 紫色科技风 */}</code></pre></div>
+<h3>自定义主题</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;ThemeProvider theme={{
+  '--tech-primary': '#ff6b35',
+  '--tech-bg-dark': '#1a0a00',
+}}&gt;
+  &lt;App /&gt;
+&lt;/ThemeProvider&gt;</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>theme</td><td>主题名称或自定义变量对象</td><td><code>string | Record<string, string></code></td><td>'dark'</td></tr><tr><td>children</td><td>子内容</td><td><code>ReactNode</code></td><td>-</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-popconfirm">
+<h1>Popconfirm 气泡确认框</h1>
+<p>点击元素弹出气泡确认框，适合二次确认场景。</p>
+<h2>代码演示</h2>
+<h3>基础用法</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;Popconfirm title=&quot;确定删除吗？&quot; onConfirm={() =&gt; console.log('confirmed')}&gt;
+  &lt;TechButton variant=&quot;primary&quot;&gt;删除&lt;/TechButton&gt;
+&lt;/Popconfirm&gt;</code></pre></div>
+<h3>自定义按钮文字</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;Popconfirm
+  title=&quot;确定提交吗？&quot;
+  okText=&quot;提交&quot;
+  cancelText=&quot;再想想&quot;
+  onConfirm={() =&gt; console.log('ok')}
+&gt;
+  &lt;TechButton variant=&quot;primary&quot;&gt;提交&lt;/TechButton&gt;
+&lt;/Popconfirm&gt;</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>title</td><td>确认标题</td><td><code>ReactNode</code></td><td>-</td></tr><tr><td>description</td><td>确认描述</td><td><code>ReactNode</code></td><td>-</td></tr><tr><td>okText</td><td>确认按钮文字</td><td><code>string</code></td><td>确定</td></tr><tr><td>cancelText</td><td>取消按钮文字</td><td><code>string</code></td><td>取消</td></tr><tr><td>onConfirm</td><td>确认回调</td><td><code>() => void</code></td><td>-</td></tr><tr><td>onCancel</td><td>取消回调</td><td><code>() => void</code></td><td>-</td></tr><tr><td>placement</td><td>弹出位置</td><td><code>'top' | 'bottom' | 'left' | 'right'</code></td><td>'top'</td></tr><tr><td>variant</td><td>视觉变体</td><td><code>'default' | 'neon'</code></td><td>'default'</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-skeleton">
+<h1>Skeleton 骨架屏</h1>
+<p>内容加载时的占位图形，提供多种形状和动画效果。</p>
+<h2>代码演示</h2>
+<h3>基础用法</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;Skeleton loading&gt;
+  &lt;div&gt;实际内容&lt;/div&gt;
+&lt;/Skeleton&gt;</code></pre></div>
+<h3>不同形状</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;Skeleton variant=&quot;text&quot; /&gt;
+&lt;Skeleton variant=&quot;circle&quot; size={48} /&gt;
+&lt;Skeleton variant=&quot;rect&quot; width={200} height={100} /&gt;</code></pre></div>
+<h3>动画效果</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;Skeleton variant=&quot;text&quot; animate=&quot;pulse&quot; /&gt;
+&lt;Skeleton variant=&quot;text&quot; animate=&quot;wave&quot; /&gt;
+&lt;Skeleton variant=&quot;text&quot; animate={false} /&gt;</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>loading</td><td>是否加载中</td><td><code>boolean</code></td><td>true</td></tr><tr><td>variant</td><td>形状变体</td><td><code>'text' | 'circle' | 'rect'</code></td><td>'text'</td></tr><tr><td>width</td><td>宽度</td><td><code>number | string</code></td><td>100%</td></tr><tr><td>height</td><td>高度</td><td><code>number | string</code></td><td>20</td></tr><tr><td>size</td><td>尺寸（circle用）</td><td><code>number</code></td><td>40</td></tr><tr><td>animate</td><td>动画效果</td><td><code>true | 'pulse' | 'wave'</code></td><td>'pulse'</td></tr><tr><td>children</td><td>实际内容</td><td><code>ReactNode</code></td><td>-</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-drawer">
+<h1>Drawer 抽屉</h1>
+<p>从屏幕边缘滑出的面板，适合详情展示和表单填写。</p>
+<h2>代码演示</h2>
+<h3>基础用法</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;Drawer open={open} onClose={() =&gt; setOpen(false)} title=&quot;详情&quot;&gt;
+  &lt;p&gt;抽屉内容&lt;/p&gt;
+&lt;/Drawer&gt;</code></pre></div>
+<h3>不同方向</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;Drawer placement=&quot;left&quot; ...&gt;   {/* 左侧 */}
+&lt;Drawer placement=&quot;right&quot; ...&gt;  {/* 右侧 */}
+&lt;Drawer placement=&quot;top&quot; ...&gt;    {/* 顶部 */}
+&lt;Drawer placement=&quot;bottom&quot; ...&gt; {/* 底部 */}</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>open</td><td>是否显示</td><td><code>boolean</code></td><td>false</td></tr><tr><td>onClose</td><td>关闭回调</td><td><code>() => void</code></td><td>-</td></tr><tr><td>title</td><td>标题</td><td><code>ReactNode</code></td><td>-</td></tr><tr><td>placement</td><td>弹出方向</td><td><code>'left' | 'right' | 'top' | 'bottom'</code></td><td>'right'</td></tr><tr><td>width</td><td>宽度（左右方向）</td><td><code>number</code></td><td>400</td></tr><tr><td>height</td><td>高度（上下方向）</td><td><code>number</code></td><td>300</td></tr><tr><td>maskClosable</td><td>点击遮罩关闭</td><td><code>boolean</code></td><td>true</td></tr><tr><td>closable</td><td>显示关闭按钮</td><td><code>boolean</code></td><td>true</td></tr><tr><td>animate</td><td>入场动画</td><td><code>boolean</code></td><td>true</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-qrcode">
+<h1>QRCode 二维码</h1>
+<p>科技风格二维码组件，支持自定义颜色、大小和边框装饰。</p>
+<h2>代码演示</h2>
+<h3>基础用法</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;QRCode value=&quot;https://example.com&quot; /&gt;</code></pre></div>
+<h3>自定义样式</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;QRCode
+  value=&quot;https://example.com&quot;
+  size={160}
+  color=&quot;#00d4ff&quot;
+  bgColor=&quot;#0a0e27&quot;
+  variant=&quot;neon&quot;
+/&gt;</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>value</td><td>二维码内容</td><td><code>string</code></td><td>-</td></tr><tr><td>size</td><td>尺寸(px)</td><td><code>number</code></td><td>128</td></tr><tr><td>color</td><td>前景色</td><td><code>string</code></td><td>--tech-primary</td></tr><tr><td>bgColor</td><td>背景色</td><td><code>string</code></td><td>--tech-bg-dark</td></tr><tr><td>variant</td><td>视觉变体</td><td><code>'default' | 'neon'</code></td><td>'default'</td></tr><tr><td>level</td><td>容错等级</td><td><code>'L' | 'M' | 'Q' | 'H'</code></td><td>'M'</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-icon">
+<h1>Icon 图标</h1>
+<p>科技风格图标组件，内置常用图标集，支持自定义颜色和大小。</p>
+<h2>代码演示</h2>
+<h3>基础用法</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;Icon name=&quot;setting&quot; /&gt;
+&lt;Icon name=&quot;refresh&quot; /&gt;
+&lt;Icon name=&quot;add&quot; /&gt;</code></pre></div>
+<h3>自定义大小和颜色</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;Icon name=&quot;setting&quot; size={24} color=&quot;#00d4ff&quot; /&gt;
+&lt;Icon name=&quot;refresh&quot; size={32} color=&quot;#0affb0&quot; /&gt;</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>name</td><td>图标名称</td><td><code>string</code></td><td>-</td></tr><tr><td>size</td><td>图标大小(px)</td><td><code>number</code></td><td>16</td></tr><tr><td>color</td><td>图标颜色</td><td><code>string</code></td><td>currentColor</td></tr><tr><td>className</td><td>自定义类名</td><td><code>string</code></td><td>-</td></tr><tr><td>style</td><td>自定义样式</td><td><code>CSSProperties</code></td><td>-</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-masonry">
+<h1>Masonry 瀑布流</h1>
+<p>瀑布流布局组件，自动排列不等高内容，适合图片墙、卡片列表等场景。</p>
+<h2>代码演示</h2>
+<h3>基础用法</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;Masonry columns={3} gap={16}&gt;
+  &lt;div style={{ height: 120 }}&gt;卡片1&lt;/div&gt;
+  &lt;div style={{ height: 80 }}&gt;卡片2&lt;/div&gt;
+  &lt;div style={{ height: 160 }}&gt;卡片3&lt;/div&gt;
+&lt;/Masonry&gt;</code></pre></div>
+<h3>自定义列数和间距</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;Masonry columns={4} gap={20}&gt;
+  {items.map(item =&gt; (
+    &lt;div key={item.id}&gt;{item.content}&lt;/div&gt;
+  ))}
+&lt;/Masonry&gt;</code></pre></div>
+<h2>API</h2>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>columns</td><td>列数</td><td><code>number</code></td><td>3</td></tr><tr><td>gap</td><td>间距(px)</td><td><code>number</code></td><td>16</td></tr><tr><td>children</td><td>子内容</td><td><code>ReactNode</code></td><td>-</td></tr><tr><td>className</td><td>自定义类名</td><td><code>string</code></td><td>-</td></tr><tr><td>style</td><td>自定义样式</td><td><code>CSSProperties</code></td><td>-</td></tr></tbody></table>
+</div>
+
+<div class="page-section" id="page-floating-button">
+<h1>FloatingButton 悬浮按钮</h1>
+<p>科技风格悬浮操作按钮（FAB），支持固定定位和可拖拽模式。内置脉冲动画、四角装饰和四种视觉变体，完美适配主题切换。</p>
+<h2>代码演示</h2>
+<h3>基础用法</h3>
+<div class="code-box"><pre class="code-box__pre"><code>import { FloatingButton, Icon } from 'react-tech-ui';
+
+&lt;FloatingButton
+  icon={&lt;Icon name=&quot;plus&quot; size={20} /&gt;}
+  onClick={() =&gt; console.log('clicked')}
+/&gt;</code></pre></div>
+<h3>可拖拽悬浮按钮</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;FloatingButton
+  icon={&lt;Icon name=&quot;settings&quot; size={20} /&gt;}
+  draggable
+  edgeSnap
+  variant=&quot;neon&quot;
+  size={52}
+  onClick={() =&gt; console.log('clicked')}
+  onDragEnd={(pos) =&gt; console.log('拖拽结束', pos)}
+/&gt;</code></pre></div>
+<h3>视觉变体</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;FloatingButton variant=&quot;default&quot; icon={...} /&gt;
+&lt;FloatingButton variant=&quot;neon&quot; icon={...} /&gt;
+&lt;FloatingButton variant=&quot;glow&quot; icon={...} /&gt;
+&lt;FloatingButton variant=&quot;glass&quot; icon={...} /&gt;</code></pre></div>
+<h3>带文字标签</h3>
+<div class="code-box"><pre class="code-box__pre"><code>&lt;FloatingButton
+  icon={&lt;Icon name=&quot;message&quot; size={18} /&gt;}
+  size={56}
+  variant=&quot;glow&quot;
+  draggable
+  edgeSnap
+&gt;
+  消息
+&lt;/FloatingButton&gt;</code></pre></div>
+<h3>命令式调用（方法触发）</h3>
+<p>支持通过静态方法直接调用，无需在 JSX 中声明组件。默认在右侧显示，支持自定义样式和位置。</p>
+<div class="code-box"><pre class="code-box__pre"><code>import { FloatingButton, Icon } from 'react-tech-ui';
+
+// 显示悬浮按钮（右侧出现，可拖拽）
+FloatingButton.show({
+  icon: &lt;Icon name=&quot;setting&quot; size={20} /&gt;,
+  children: '设置',
+  variant: 'neon',
+  draggable: true,
+  position: 'right',  // 'left' | 'right' | { x, y }
+  onClick: () =&gt; {
+    FloatingButton.hide();
+  },
+});
+
+// 更新按钮配置
+FloatingButton.update({
+  icon: &lt;Icon name=&quot;refresh&quot; size={20} /&gt;,
+  variant: 'glow',
+});
+
+// 隐藏按钮
+FloatingButton.hide();</code></pre></div>
+<h2>API</h2>
+<h3>FloatingButton</h3>
+<table><thead><tr><th>属性</th><th>说明</th><th>类型</th><th>默认值</th></tr></thead><tbody><tr><td>icon</td><td>图标内容</td><td><code>ReactNode</code></td><td>-</td></tr><tr><td>children</td><td>文字标签</td><td><code>ReactNode</code></td><td>-</td></tr><tr><td>variant</td><td>视觉变体</td><td><code>'default' | 'neon' | 'glow' | 'glass'</code></td><td>'default'</td></tr><tr><td>size</td><td>按钮尺寸(px)</td><td><code>number</code></td><td>48</td></tr><tr><td>draggable</td><td>是否可拖拽</td><td><code>boolean</code></td><td>false</td></tr><tr><td>initialPosition</td><td>初始位置</td><td><code>{ x?: number; y?: number }</code></td><td>右下角</td></tr><tr><td>edgeSnap</td><td>拖拽结束后吸附到屏幕边缘</td><td><code>boolean</code></td><td>true</td></tr><tr><td>snapThreshold</td><td>吸附边距(px)</td><td><code>number</code></td><td>60</td></tr><tr><td>onClick</td><td>点击回调（拖拽移动时不触发）</td><td><code>(e) => void</code></td><td>-</td></tr><tr><td>onDragEnd</td><td>拖拽结束回调</td><td><code>(pos) => void</code></td><td>-</td></tr></tbody></table>
+<h3>命令式 API</h3>
+<table><thead><tr><th>方法</th><th>说明</th><th>参数</th></tr></thead><tbody><tr><td><code>FloatingButton.show(options)</code></td><td>显示悬浮按钮</td><td>FloatingButtonOptions: position, icon, children, variant, draggable, onClick, onDragEnd...</td></tr><tr><td><code>FloatingButton.hide()</code></td><td>隐藏悬浮按钮</td><td>-</td></tr><tr><td><code>FloatingButton.update(options)</code></td><td>更新悬浮按钮配置</td><td>FloatingButtonOptions</td></tr></tbody></table>
+</div>
+
+
+</main>
+</div>
+</div>
+<script>
+function navigate(page) {
+  document.querySelectorAll('.page-section').forEach(function(el) { el.classList.remove('page-section--active'); });
+  var target = document.getElementById('page-' + page);
+  if (target) target.classList.add('page-section--active');
+  document.querySelectorAll('.doc-nav-item').forEach(function(el) { el.classList.remove('doc-nav-item--active'); });
+  var navItem = document.querySelector('.doc-nav-item[data-page="' + page + '"]');
+  if (navItem) navItem.classList.add('doc-nav-item--active');
+  document.getElementById('content').scrollTop = 0;
+}
+function toggleSidebar() {
+  var sidebar = document.getElementById('sidebar');
+  var btn = document.getElementById('toggleBtn');
+  sidebar.classList.toggle('doc-sidebar--collapsed');
+  if (sidebar.classList.contains('doc-sidebar--collapsed')) {
+    btn.innerHTML = '&#9654;';
+  } else {
+    btn.innerHTML = '&#9660;';
+  }
+}
+</script>
+</body>
+</html>
